@@ -7,7 +7,8 @@ class DimmerService : Service() {
     private var originalBrightness = -1
     private var isDimmed = false
     private var overlay: View? = null
-    private val threshold = 60 * 1000L 
+    private var virtualIdleStart = SystemClock.uptimeMillis()
+    private val threshold = 60 * 1000L // 1 minute
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val chan = NotificationChannel("dim", "Dimmer", NotificationManager.IMPORTANCE_LOW)
@@ -18,11 +19,20 @@ class DimmerService : Service() {
             while (isActive) {
                 val last = getLastActivity()
                 val uptime = SystemClock.uptimeMillis()
-                val idle = uptime - last
-                log("U:$uptime L:$last I:${idle/1000}s")
                 
-                if (idle > threshold && !isDimmed) dim(true) 
-                else if (idle < threshold && isDimmed) dim(false)
+                // If the gap is > 500ms, a REAL touch happened. Reset our timer.
+                if (uptime - last < 500) {
+                    // This is just system noise/logging, keep counting idle time
+                } else {
+                    virtualIdleStart = uptime
+                }
+
+                val currentIdle = uptime - virtualIdleStart
+                log("Idle: ${currentIdle/1000}s")
+                
+                if (currentIdle > threshold && !isDimmed) dim(true) 
+                else if (currentIdle < 1000 && isDimmed) dim(false)
+                
                 delay(3000)
             }
         }
@@ -33,13 +43,11 @@ class DimmerService : Service() {
         isDimmed = doDim
         Handler(Looper.getMainLooper()).post {
             if (doDim) {
-                log("ACTION: DIMMING")
                 if (Settings.System.canWrite(this)) {
                     originalBrightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
                     Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, 1)
                 } else { showOverlay(true) }
             } else {
-                log("ACTION: RESET")
                 if (originalBrightness != -1) Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, originalBrightness)
                 showOverlay(false)
             }
@@ -50,38 +58,22 @@ class DimmerService : Service() {
         val wm = getSystemService(WINDOW_SERVICE) as WindowManager
         if (show && overlay == null) {
             overlay = View(this).apply { setBackgroundColor(Color.BLACK); alpha = 0.7f }
-            val params = WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, PixelFormat.TRANSLUCENT)
+            val params = WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT)
             wm.addView(overlay, params)
         } else if (!show && overlay != null) { try { wm.removeView(overlay) } catch(e:Exception) {}; overlay = null }
     }
 
-    private fun getDump(serviceName: String): String {
+    private fun getLastActivity(): Long {
         return try {
-            val sm = Class.forName("android.os.ServiceManager").getMethod("getService", String::class.java).invoke(null, serviceName) as IBinder
+            val sm = Class.forName("android.os.ServiceManager").getMethod("getService", String::class.java).invoke(null, "power") as IBinder
             val pipe = ParcelFileDescriptor.createPipe()
             sm.dump(pipe[1].fileDescriptor, null)
             pipe[1].close()
-            val text = BufferedReader(InputStreamReader(FileInputStream(pipe[0].fileDescriptor))).readText()
+            val out = BufferedReader(InputStreamReader(FileInputStream(pipe[0].fileDescriptor))).readText()
             pipe[0].close()
-            text
-        } catch (e: Exception) { "" }
-    }
-
-    private fun getLastActivity(): Long {
-        val now = SystemClock.uptimeMillis()
-        // Try Power Manager first
-        val pDump = getDump("power")
-        val pTime = pDump.lines().find { it.contains("mLastUserActivityTime", true) }
-            ?.substringAfter("=")?.trim()?.split(" ")?.get(0)?.toLongOrNull()
-        
-        if (pTime != null && pTime > 0) return pTime
-
-        // Fallback: Try Input Dispatcher (Last Event Time)
-        val iDump = getDump("input")
-        val iTime = iDump.lines().find { it.contains("LastTouchTime", true) || it.contains("LastEventTime", true) }
-            ?.substringAfter(":")?.trim()?.split(" ")?.get(0)?.toLongOrNull()
-
-        return iTime ?: now
+            out.lines().find { it.contains("mLastUserActivityTime", true) }
+                ?.substringAfter("=")?.trim()?.split(" ")?.get(0)?.toLong() ?: SystemClock.uptimeMillis()
+        } catch (e: Exception) { SystemClock.uptimeMillis() }
     }
 
     private fun log(m: String) { sendBroadcast(Intent("IDLE_LOG").apply { putExtra("log", m) }) }
