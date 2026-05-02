@@ -29,7 +29,8 @@ jobs:
         run: gradle wrapper
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        # Adding :app: ensures it looks in the subfolder
+        run: ./gradlew :app:assembleDebug --stacktrace
 
       # Diagnostic step: List files so you can see if the APK was created
       - name: List Build Output
