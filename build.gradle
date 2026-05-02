@@ -5,8 +5,10 @@ buildscript {
         maven { url 'https://jitpack.io' }
         jcenter()
         mavenCentral()
+        jcenter()
         maven { url 'https://jitpack.io' }
         google()
+        maven { url "https://jitpack.io" }
         maven { url 'https://jitpack.io' }
         maven { url 'https://jitpack.io' }
 //        maven { url 'https://dl.bintray.com/umsdk/release' }
@@ -22,8 +24,10 @@ allprojects {
         maven { url 'https://jitpack.io' }
         jcenter()
         mavenCentral()
+        jcenter()
         maven { url 'https://jitpack.io' }
         google()
+        maven { url "https://jitpack.io" }
         maven { url 'https://jitpack.io' }
         maven { url 'https://jitpack.io' }
 //        maven { url 'https://dl.bintray.com/umsdk/release' }
