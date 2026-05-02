@@ -170,3 +170,10 @@ dependencies {
     //悬浮窗
     implementation 'com.imuxuan:floatingview:1.6'
 }
+
+repositories {
+    google()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+    jcenter()
+}
