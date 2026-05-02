@@ -1,3 +1,4 @@
+#include <cstddef>
 //
 // Created by canyie on 2020/2/9.
 //
@@ -81,10 +82,10 @@ private:
 
 class ScopedLocalClassRef : public ScopedLocalRef<jclass> {
 public:
-    ScopedLocalClassRef(JNIEnv* env) : ScopedLocalRef(env) {
+    ScopedLocalClassRef(JNIEnv* env) : ScopedLocalRef<jclass>(env) {
     }
 
-    ScopedLocalClassRef(JNIEnv* env, jclass ref) : ScopedLocalRef(env, ref) {
+    ScopedLocalClassRef(JNIEnv* env, jclass ref) : ScopedLocalRef<jclass>(env, ref) {
     }
 
     ScopedLocalClassRef(JNIEnv* env, const char* name) : ScopedLocalRef(env, env->FindClass(name)) {
@@ -104,10 +105,10 @@ public:
 
 class ScopedLocalUtfStringRef : public ScopedLocalRef<jstring> {
 public:
-    ScopedLocalUtfStringRef(JNIEnv* env) : ScopedLocalRef(env) {
+    ScopedLocalUtfStringRef(JNIEnv* env) : ScopedLocalRef<jclass>(env) {
     }
 
-    ScopedLocalUtfStringRef(JNIEnv* env, jstring ref) : ScopedLocalRef(env, ref) {
+    ScopedLocalUtfStringRef(JNIEnv* env, jstring ref) : ScopedLocalRef<jclass>(env, ref) {
     }
 
     ScopedLocalUtfStringRef(JNIEnv* env, const char* content) : ScopedLocalRef(
