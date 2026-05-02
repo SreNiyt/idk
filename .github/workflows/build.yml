@@ -23,10 +23,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      # Since we don't have a real gradlew file in the repo yet, 
-      # we tell the runner to generate one.
       - name: Generate Wrapper
-        run: gradle wrapper
+        # This forces the project to use a version that won't crash the Kotlin plugin
+        run: gradle wrapper --gradle-version 8.5
 
       - name: Build Debug APK
         # Adding :app: ensures it looks in the subfolder
