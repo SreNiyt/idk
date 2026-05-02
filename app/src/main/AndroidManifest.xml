@@ -1,0 +1,17 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.your.idledimmer">
+
+    <uses-permission android:name="android.permission.DUMP" />
+    
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application ...>
+        <service 
+            android:name=".DimmerService"
+            android:enabled="true"
+            android:exported="false" />
+    </application>
+</manifest>
+
