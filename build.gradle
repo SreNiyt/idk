@@ -1,18 +1,8 @@
 buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
+    repositories { google(); mavenCentral() }
     dependencies {
-        // Updated to versions that support Gradle 8.5+
         classpath 'com.android.tools.build:gradle:8.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22"
     }
 }
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
+allprojects { repositories { google(); mavenCentral() } }

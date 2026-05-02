@@ -1,44 +1,14 @@
-name: Build IdleDimmer APK
-
-on:
-  push:
-    branches: [ "main", "master" ]
-  workflow_dispatch:
-
+name: Build
+on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      # This automatically handles the Gradle wrapper and caching
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-
-      - name: Generate Wrapper
-        # This forces the project to use a version that won't crash the Kotlin plugin
-        run: gradle wrapper --gradle-version 8.5
-
-      - name: Build Debug APK
-        # Adding :app: ensures it looks in the subfolder
-        run: ./gradlew :app:assembleDebug --stacktrace
-
-      # Diagnostic step: List files so you can see if the APK was created
-      - name: List Build Output
-        run: ls -R app/build/outputs/apk/debug/
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: IdleDimmer-Debug
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {java-version: '17', distribution: 'temurin'}
+      - uses: gradle/actions/setup-gradle@v3
+      - run: gradle wrapper --gradle-version 8.5
+      - run: ./gradlew :app:assembleDebug
+      - uses: actions/upload-artifact@v4
+        with: {name: IdleDimmer, path: app/build/outputs/apk/debug/app-debug.apk}
