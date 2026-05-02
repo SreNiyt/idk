@@ -1,84 +1,52 @@
+#ifndef PINE_UTILS_SCOPED_LOCAL_REF_H
+#define PINE_UTILS_SCOPED_LOCAL_REF_H
+
+#include <jni.h>
 #include <cstddef>
-//
-// Created by canyie on 2020/2/9.
-//
-
-#ifndef PINE_SCOPED_LOCAL_REF_H
-#define PINE_SCOPED_LOCAL_REF_H
-
-#include "macros.h"
 
 template<typename T>
 class ScopedLocalRef {
 public:
-    ScopedLocalRef(JNIEnv* env) : env(env), mLocalRef(nullptr) {
+    ScopedLocalRef(JNIEnv* env) : env_(env), ref_(nullptr) {
     }
 
-    ScopedLocalRef(JNIEnv* env, T ref) : env(env), mLocalRef(ref) {
+    ScopedLocalRef(JNIEnv* env, T ref) : env_(env), ref_(ref) {
     }
 
     ~ScopedLocalRef() {
-        Reset();
-    }
-
-    T Get() const {
-        return mLocalRef;
-    }
-
-    void Reset(T newRef = nullptr) {
-        if (mLocalRef != newRef) {
-            if (mLocalRef != nullptr) {
-                env->DeleteLocalRef(mLocalRef);
-            }
-            mLocalRef = newRef;
+        if (ref_ != nullptr) {
+            env_->DeleteLocalRef(ref_);
         }
     }
 
-    T Release() __attribute__((warn_unused_result)) {
-        T ref = mLocalRef;
-        mLocalRef = nullptr;
-        return ref;
+    void reset(T ptr = nullptr) {
+        if (ptr != ref_) {
+            if (ref_ != nullptr) {
+                env_->DeleteLocalRef(ref_);
+            }
+            ref_ = ptr;
+        }
     }
 
-    bool IsNull() const {
-        return mLocalRef == nullptr;
-    }
-
-    JNIEnv* Env() {
-        return env;
+    T get() const {
+        return ref_;
     }
 
     bool operator==(std::nullptr_t) const {
-        return IsNull();
+        return ref_ == nullptr;
     }
 
     bool operator!=(std::nullptr_t) const {
-        return !IsNull();
-    }
-
-    bool operator==(ScopedLocalRef const s) const {
-        return env->IsSameObject(mLocalRef, s.mLocalRef);
-    }
-
-    bool operator!=(ScopedLocalRef const s) const {
-        return !env->IsSameObject(mLocalRef, s.mLocalRef);
-    }
-
-    bool operator==(T const other) const {
-        return env->IsSameObject(mLocalRef, other);
-    }
-
-    bool operator!=(T const other) const {
-        return !env->IsSameObject(mLocalRef, other);
+        return ref_ != nullptr;
     }
 
 private:
-    JNIEnv* env;
-    T mLocalRef;
+    JNIEnv* const env_;
+    T ref_;
 
-    DISALLOW_COPY_AND_ASSIGN(ScopedLocalRef);
+    ScopedLocalRef(const ScopedLocalRef&) = delete;
+    void operator=(const ScopedLocalRef&) = delete;
 };
-
 
 class ScopedLocalClassRef : public ScopedLocalRef<jclass> {
 public:
@@ -87,19 +55,14 @@ public:
 
     ScopedLocalClassRef(JNIEnv* env, jclass ref) : ScopedLocalRef<jclass>(env, ref) {
     }
+};
 
-    ScopedLocalClassRef(JNIEnv* env, const char* name) : ScopedLocalRef(env, env->FindClass(name)) {
+class ScopedLocalObjectRef : public ScopedLocalRef<jobject> {
+public:
+    ScopedLocalObjectRef(JNIEnv* env) : ScopedLocalRef<jobject>(env) {
     }
 
-    jmethodID FindMethodID(const char* name, const char* signature) {
-        JNIEnv* env = Env();
-        jmethodID method = env->GetMethodID(Get(), name, signature);
-        if (LIKELY(method != nullptr)) {
-            return method;
-        } else {
-            env->ExceptionClear();
-            return nullptr;
-        }
+    ScopedLocalObjectRef(JNIEnv* env, jobject ref) : ScopedLocalRef<jobject>(env, ref) {
     }
 };
 
@@ -110,10 +73,6 @@ public:
 
     ScopedLocalUtfStringRef(JNIEnv* env, jstring ref) : ScopedLocalRef<jstring>(env, ref) {
     }
-
-    ScopedLocalUtfStringRef(JNIEnv* env, const char* content) : ScopedLocalRef(
-            env, env->NewStringUTF(content)) {
-    }
 };
 
-#endif //PINE_SCOPED_LOCAL_REF_H
+#endif //PINE_UTILS_SCOPED_LOCAL_REF_H
