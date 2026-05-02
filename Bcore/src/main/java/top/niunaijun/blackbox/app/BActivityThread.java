@@ -60,7 +60,7 @@ import top.niunaijun.blackbox.app.configuration.AppLifecycleCallback;
 import top.niunaijun.blackbox.app.dispatcher.AppServiceDispatcher;
 import top.niunaijun.blackbox.core.CrashHandler;
 import top.niunaijun.blackbox.core.IBActivityThread;
-import top.niunaijun.blackbox.core.IOCore;
+import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.core.NativeCore;
 import top.niunaijun.blackbox.core.env.VirtualRuntime;
 import top.niunaijun.blackbox.core.system.user.BUserHandle;
@@ -282,8 +282,8 @@ public class BActivityThread extends IBActivityThread.Stub {
     }
 
     public void bindApplication(final String packageName, final String processName) {
-        com.vxp.bridge.XposedManager.init(packageName, top.niunaijun.blackbox.core.IOCore.getContext().getClassLoader());
-        com.vxp.bridge.XposedManager.init(packageName, top.niunaijun.blackbox.core.IOCore.getContext().getClassLoader());
+        com.vxp.bridge.XposedManager.init(packageName, top.niunaijun.blackbox.BlackBoxCore.getContext().getClassLoader());
+        com.vxp.bridge.XposedManager.init(packageName, top.niunaijun.blackbox.BlackBoxCore.getContext().getClassLoader());
         if (Looper.myLooper() != Looper.getMainLooper()) {
             final ConditionVariable conditionVariable = new ConditionVariable();
             BlackBoxCore.get().getHandler().post(() -> {

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -64,6 +65,7 @@ tasks.withType(Javadoc) {
 
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "com.swift.sandhook:hooklib:4.2.1"
     api "com.swift.sandhook:nativehook:4.2.1"
     api "com.swift.sandhook:xposedcompat:4.2.1"
