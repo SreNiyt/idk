@@ -1,4 +1,5 @@
 package top.niunaijun.blackbox.app;
+import top.niunaijun.blackbox.core.IOCore;
 
 import android.app.Activity;
 import android.app.Application;
