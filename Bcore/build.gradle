@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    ndkVersion "21.4.7075529"
     compileSdkVersion 28
     buildToolsVersion "28.0.2"
 
