@@ -12,6 +12,7 @@ public:
     ~ScopedLocalRef() { if (ref_ != nullptr) env_->DeleteLocalRef(ref_); }
     
     T get() const { return ref_; }
+    T Get() const { return ref_; }
     bool IsNull() const { return ref_ == nullptr; }
     
     void reset(T ptr = nullptr) {
