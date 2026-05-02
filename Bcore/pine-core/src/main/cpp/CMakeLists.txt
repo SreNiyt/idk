@@ -50,3 +50,4 @@ find_library(log-lib log)
 target_link_libraries(pine ${log-lib})
 
 ENABLE_LANGUAGE(ASM)
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-Bsymbolic")

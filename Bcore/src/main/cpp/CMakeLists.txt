@@ -53,3 +53,4 @@ target_link_libraries( # Specifies the target library.
         ${log-lib}
         z
         )
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-Bsymbolic")
