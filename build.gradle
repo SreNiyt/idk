@@ -31,7 +31,6 @@ ext {
     targetSdkVersion = 30
     versionName = '1.0'
     versionCode = 1
-    // These were the missing lines:
     xVersion = '1.1.0'
     blackReflection = '1.1.2'
 }
