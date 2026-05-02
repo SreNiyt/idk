@@ -50,7 +50,7 @@ namespace pine {
         bool CannotSafeInlineHook(art::ArtMethod* target) {
             size_t target_code_size = target->GetCompiledCodeSize();
             if (UNLIKELY(CannotSafeInlineHook(target_code_size))) {
-                LOGW("Cannot safe inline hook method: code size of target method too small (size %u)!",
+                LOGW("Cannot safe inline hook method: code size of target method too small (size %zu)!",
                      target_code_size);
                 return true;
             }
@@ -66,7 +66,7 @@ namespace pine {
             size_t size = kDirectJumpTrampolineSize + kSkipBytes;
             if (UNLIKELY(target_code_size < size)) {
                 LOGW("Cannot safe inline hook method and skip first few bytes: "
-                     "code size of target method too small (size %u)!",
+                     "code size of target method too small (size %zu)!",
                      target_code_size);
                 return false;
             }

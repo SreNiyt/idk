@@ -105,10 +105,10 @@ public:
 
 class ScopedLocalUtfStringRef : public ScopedLocalRef<jstring> {
 public:
-    ScopedLocalUtfStringRef(JNIEnv* env) : ScopedLocalRef<jclass>(env) {
+    ScopedLocalUtfStringRef(JNIEnv* env) : ScopedLocalRef<jstring>(env) {
     }
 
-    ScopedLocalUtfStringRef(JNIEnv* env, jstring ref) : ScopedLocalRef<jclass>(env, ref) {
+    ScopedLocalUtfStringRef(JNIEnv* env, jstring ref) : ScopedLocalRef<jstring>(env, ref) {
     }
 
     ScopedLocalUtfStringRef(JNIEnv* env, const char* content) : ScopedLocalRef(
