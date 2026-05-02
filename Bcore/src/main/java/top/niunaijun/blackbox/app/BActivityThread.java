@@ -282,6 +282,8 @@ public class BActivityThread extends IBActivityThread.Stub {
     }
 
     public void bindApplication(final String packageName, final String processName) {
+        com.vxp.bridge.XposedManager.init(packageName, top.niunaijun.blackbox.core.IOCore.getContext().getClassLoader());
+        com.vxp.bridge.XposedManager.init(packageName, top.niunaijun.blackbox.core.IOCore.getContext().getClassLoader());
         if (Looper.myLooper() != Looper.getMainLooper()) {
             final ConditionVariable conditionVariable = new ConditionVariable();
             BlackBoxCore.get().getHandler().post(() -> {
