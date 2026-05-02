@@ -38,8 +38,21 @@ class ScopedLocalClassRef : public ScopedLocalRef<jclass> {
 public:
     ScopedLocalClassRef(JNIEnv* env) : ScopedLocalRef<jclass>(env) {}
     ScopedLocalClassRef(JNIEnv* env, jclass ref) : ScopedLocalRef<jclass>(env, ref) {}
-    // The missing string constructor:
     ScopedLocalClassRef(JNIEnv* env, const char* name) : ScopedLocalRef<jclass>(env, env->FindClass(name)) {}
+
+    // The missing JNI shortcut methods
+    jmethodID FindMethodID(const char* name, const char* sig) const {
+        return env_->GetMethodID(ref_, name, sig);
+    }
+    jmethodID FindStaticMethodID(const char* name, const char* sig) const {
+        return env_->GetStaticMethodID(ref_, name, sig);
+    }
+    jfieldID FindFieldID(const char* name, const char* sig) const {
+        return env_->GetFieldID(ref_, name, sig);
+    }
+    jfieldID FindStaticFieldID(const char* name, const char* sig) const {
+        return env_->GetStaticFieldID(ref_, name, sig);
+    }
 };
 
 class ScopedLocalObjectRef : public ScopedLocalRef<jobject> {
