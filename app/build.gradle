@@ -121,6 +121,7 @@ repositories {
     }
 }
 
+repositories { google(); mavenCentral(); maven { url "https://jitpack.io" } }
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     implementation project(':Bcore')
