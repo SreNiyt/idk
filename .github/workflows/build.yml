@@ -1,0 +1,40 @@
+name: Build & Commit Binary
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install musl toolchain
+        run: |
+          sudo apt update
+          sudo apt install -y musl-tools gcc-aarch64-linux-gnu
+
+      - name: Build static binary
+        run: |
+          aarch64-linux-gnu-gcc cpu.c -O2 -pipe -static \
+            -fomit-frame-pointer -s \
+            -o cpu
+
+      - name: Move binary to folder
+        run: |
+          mkdir -p build
+          mv cpu build/cpu
+
+      - name: Commit binary
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add build/cpu
+          git commit -m "Update compiled binary" || echo "No changes"
+          git push
