@@ -26,6 +26,7 @@ task clean(type: Delete) {
 }
 
 ext {
+    kotlin_version = "1.4.31"
     compileSdkVersion = 30
     buildToolsVersion = "30.0.3"
     targetSdkVersion = 34
