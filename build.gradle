@@ -1,9 +1,8 @@
 buildscript {
     repositories {
-        maven { url 'https://jitpack.io' } // Essential
+        maven { url 'https://jitpack.io' }
         google()
         mavenCentral()
-        jcenter()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.0.1"
@@ -13,12 +12,12 @@ buildscript {
 
 allprojects {
     repositories {
-        maven { url 'https://jitpack.io' } // Essential
+        maven { url 'https://jitpack.io' }
         google()
         mavenCentral()
-        jcenter()
     }
 }
+
 
 
 task clean(type: Delete) {
