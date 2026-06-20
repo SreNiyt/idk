@@ -1,8 +1,8 @@
 buildscript {
     repositories {
+        maven { url 'https://jitpack.io' } // Essential
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' } // Essential
         jcenter()
     }
     dependencies {
@@ -13,9 +13,9 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url 'https://jitpack.io' } // Essential
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' } // Essential
         jcenter()
     }
 }
