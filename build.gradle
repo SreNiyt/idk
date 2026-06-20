@@ -1,16 +1,14 @@
+
 buildscript {
     ext.kotlin_version = "1.4.31"
     repositories {
         google()
         mavenCentral()
-        maven { url "https://repo.spring.io/release" }
-        maven { url "https://artifactory.appodeal.com/appodeal-public" }
-        maven { url 'https://maven.aliyun.com/repository/jcenter' }
-        maven { url 'https://maven.aliyun.com/repository/public' }
-        maven { url 'https://jitpack.io' }
-        jcenter()
+        maven { url 'https://jitpack.io' } // Priority to JitPack
     }
     dependencies {
+        // Upgrade to a newer plugin version if possible, 
+        // but for now, keep this to match your project structure
         classpath "com.android.tools.build:gradle:4.0.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
@@ -20,12 +18,8 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url "https://repo.spring.io/release" }
-        maven { url "https://artifactory.appodeal.com/appodeal-public" }
-        maven { url 'https://maven.aliyun.com/repository/jcenter' }
-        maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://jitpack.io' }
-        jcenter()
+        // Removed Spring, Appodeal, and Aliyun mirrors to stop the 401/502 errors
     }
 }
 
@@ -34,9 +28,9 @@ task clean(type: Delete) {
 }
 
 ext {
-    compileSdkVersion = 30
-    buildToolsVersion = "28.0.2"
-    targetSdkVersion = 30
+    compileSdkVersion = 34
+    buildToolsVersion = "34.0.0"
+    targetSdkVersion = 34
     versionName = '1.0'
     versionCode = 1
     xVersion = '1.1.0'
