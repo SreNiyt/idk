@@ -1,19 +1,12 @@
-package black.android.content.res;
-
-import android.content.res.Configuration;
-import android.util.DisplayMetrics;
-
-import top.niunaijun.blackreflection.annotation.BClassName;
-import top.niunaijun.blackreflection.annotation.BConstructor;
-import top.niunaijun.blackreflection.annotation.BMethod;
-
 @BClassName("android.content.res.AssetManager")
 public interface AssetManager {
     @BConstructor
     android.content.res.AssetManager _new();
 
+    // Change 'addAssetPath' to 'addAssetPathInternal'
+    // Also, some A14 versions require an extra 'boolean' parameter for 'trust'
     @BMethod
-    Integer addAssetPath(String String0);
+    Integer addAssetPathInternal(String path); 
 
     @BMethod
     Configuration getConfiguration();
@@ -21,3 +14,4 @@ public interface AssetManager {
     @BMethod
     DisplayMetrics getDisplayMetrics();
 }
+
