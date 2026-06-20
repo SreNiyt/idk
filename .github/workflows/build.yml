@@ -17,6 +17,24 @@ jobs:
         with:
           ndk-version: r21e
 
+- name: Cache Gradle packages
+  uses: actions/cache@v3
+  with:
+    path: |
+      ~/.gradle/caches
+      ~/.gradle/wrapper
+    key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+    restore-keys: |
+      ${{ runner.os }}-gradle-
+
+- name: Side-load dependencies
+  run: |
+    mkdir -p app/libs
+    # Use wget or curl to fetch the specific files from a mirror that IS allowed
+    # Example:
+    wget https://your-personal-server.com/libs/stateview-2.2.0.aar -O app/libs/stateview-2.2.0.aar
+    # Then build normally
+
       - name: Build APK
         run: |
           chmod +x gradlew
