@@ -1,16 +1,13 @@
-
 buildscript {
-    ext.kotlin_version = "1.4.31"
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' } // Priority to JitPack
+        maven { url 'https://jitpack.io' } // Essential
+        jcenter()
     }
     dependencies {
-        // Upgrade to a newer plugin version if possible, 
-        // but for now, keep this to match your project structure
         classpath "com.android.tools.build:gradle:4.0.1"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.31"
     }
 }
 
@@ -18,10 +15,11 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
-        // Removed Spring, Appodeal, and Aliyun mirrors to stop the 401/502 errors
+        maven { url 'https://jitpack.io' } // Essential
+        jcenter()
     }
 }
+
 
 task clean(type: Delete) {
     delete rootProject.buildDir
